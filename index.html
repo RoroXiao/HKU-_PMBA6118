@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PMBA6118 Pre-class Assignment · Rosheen Xiao</title>
+<style>
+  :root{
+    --bg:#fbfcfc; --panel:#ffffff; --panel2:#f2f5f4; --line:#e0e6e4; --line-soft:#ebf0ee;
+    --ink:#1c211f; --ink-dim:#5a6560; --ink-faint:#8f9893;
+    --green:#0c7a55; --green-deep:#085c40; --green-dim:#9cc7b6; --green-bg:#edf6f1;
+    --amber:#8a6108; --amber-bg:#fdf3d9; --amber-line:#d9c77a;
+    --radius:14px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--bg); color:var(--ink);
+    font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei",-apple-system,"Segoe UI",sans-serif;
+    font-size:15px; line-height:1.9; letter-spacing:.2px;
+  }
+  .wrap{max-width:860px; margin:0 auto; padding:0 24px 90px}
+  section{scroll-margin-top:24px}
+  a{color:var(--green)}
+
+  /* ---------- Header ---------- */
+  header{
+    background:
+      radial-gradient(1200px 300px at 20% -60px, rgba(12,122,85,.10), transparent 65%),
+      radial-gradient(900px 260px at 95% 0px, rgba(217,164,65,.08), transparent 60%);
+    border-bottom:1px solid var(--line-soft); padding:34px 0 26px; margin-bottom:20px;
+  }
+  .kicker{
+    font-family:ui-monospace,Menlo,Consolas,monospace; font-size:11.5px; letter-spacing:3px;
+    color:var(--green); text-transform:uppercase; margin-bottom:10px;
+  }
+  h1{font-size:30px; font-weight:800; color:#0b120f; line-height:1.4; margin-bottom:8px}
+  .sub{color:var(--ink-dim); font-size:14px; margin-bottom:14px}
+  .chips{display:flex; gap:10px; flex-wrap:wrap}
+  .chip{
+    font-size:12px; font-weight:600; padding:5px 14px; border-radius:999px;
+    border:1px solid var(--green-dim); color:var(--green-deep); background:var(--panel);
+  }
+  .chip.alt{border-color:var(--amber-line); color:var(--amber); background:#fffdf6}
+
+  /* ---------- TOC（吸顶） ---------- */
+  .toc{
+    position:sticky; top:0; z-index:100;
+    background:rgba(255,255,255,.94); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);
+    border:1px solid var(--line); border-left:none; border-right:none; border-radius:0;
+    padding:12px 0; margin:0 -24px 14px;
+    box-shadow:0 2px 10px rgba(12,40,30,.07);
+  }
+  .toc-head{display:none}
+  .toc ol{list-style:none; display:flex; gap:6px; flex-wrap:wrap; padding:0 24px; margin:0}
+  .toc li{margin-bottom:0}
+  .toc li > a{
+    display:inline-flex; align-items:baseline; gap:8px; text-decoration:none;
+    color:var(--ink); font-size:13.5px; font-weight:600; padding:7px 14px; border-radius:999px;
+  }
+  .toc li > a:hover{background:var(--green-bg); color:var(--green-deep)}
+  .toc .n{font-family:ui-monospace,Menlo,monospace; font-size:11.5px; color:var(--green); min-width:20px}
+  .toc .toc-sub{display:none}
+
+  /* ---------- 章节 ---------- */
+  .sec{margin-top:54px}
+  .sec-head{display:flex; align-items:baseline; gap:16px; margin-bottom:8px}
+  .sec-num{
+    font-family:ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; color:var(--green);
+    border:1px solid var(--green-dim); background:var(--green-bg); border-radius:8px; padding:3px 10px;
+  }
+  h2{font-size:21px; font-weight:800; color:#0b120f; letter-spacing:.3px}
+  .sec-desc{color:var(--ink-dim); font-size:13.5px; margin:0 0 18px 2px}
+
+  .card{
+    background:var(--panel); border:1px solid var(--line); border-radius:var(--radius);
+    padding:26px 30px; margin:18px 0;
+    box-shadow:0 1px 3px rgba(12,40,30,.04);
+  }
+  .card h3{font-size:16px; font-weight:800; color:#0b120f; margin-bottom:6px}
+  .card .src{
+    font-family:ui-monospace,Menlo,monospace; font-size:11.5px; color:var(--ink-faint);
+    margin-bottom:14px; letter-spacing:.3px;
+  }
+  p{margin-bottom:12px}
+  .card p:last-child{margin-bottom:0}
+  b.g{color:var(--green-deep); font-weight:800}
+  .note{
+    background:var(--amber-bg); border:1px solid var(--amber-line); border-left:3px solid #d9a441;
+    padding:14px 18px; border-radius:0 10px 10px 0; font-size:13.5px; margin:16px 0; color:#5c4a12;
+  }
+  .quote{
+    border-left:3px solid var(--green); padding:12px 18px; background:var(--green-bg);
+    border-radius:0 10px 10px 0; margin:16px 0 4px; font-size:14.5px; color:#123c2e;
+  }
+  .en-block{font-family:Georgia,"Times New Roman",serif; color:#39413d}
+
+  /* ---------- 时间轴 ---------- */
+  .timeline{position:relative; margin:6px 0 4px; padding-left:26px}
+  .timeline::before{
+    content:""; position:absolute; left:7px; top:8px; bottom:14px; width:2px;
+    background:linear-gradient(180deg, var(--green-dim), var(--line));
+  }
+  .tl-item{position:relative; padding:0 0 20px 14px}
+  .tl-item:last-child{padding-bottom:4px}
+  .tl-dot{
+    position:absolute; left:-26px; top:7px; width:12px; height:12px; border-radius:50%;
+    background:var(--panel); border:3px solid var(--green);
+  }
+  .tl-item.milestone .tl-dot{background:var(--green)}
+  .tl-step{font-weight:800; color:#0b120f; font-size:14.5px; display:flex; align-items:center; gap:8px; flex-wrap:wrap}
+  .tl-text{color:var(--ink); font-size:14px; margin-top:2px}
+  .tl-pay{color:var(--ink-faint); font-size:12.5px; margin-top:3px}
+  .tl-en{display:block; color:var(--ink-faint); font-size:11.5px; font-family:Georgia,"Times New Roman",serif; line-height:1.5; margin-top:2px}
+  .aha-en{display:block; color:var(--ink-faint); font-size:12px; font-weight:400; font-family:Georgia,"Times New Roman",serif; line-height:1.6; margin-top:4px}
+  .pay-chip{
+    font-size:11px; font-weight:700; padding:1px 9px; border-radius:999px; letter-spacing:.5px;
+  }
+  .pay-chip.ins{background:var(--green-bg); color:var(--green-deep); border:1px solid var(--green-dim)}
+  .pay-chip.self{background:var(--amber-bg); color:var(--amber); border:1px solid var(--amber-line)}
+
+  /* 支付分流总览条 */
+  .pay-bar{display:flex; border-radius:10px; overflow:hidden; margin:14px 0 6px; border:1px solid var(--line)}
+  .pay-cell{flex:1; padding:12px 10px; text-align:center}
+  .pay-cell b{display:block; font-size:13.5px; color:#0b120f; margin-bottom:2px}
+  .pay-cell span{font-size:11.5px}
+  .pay-cell.covered{background:var(--green-bg)}
+  .pay-cell.covered span{color:var(--green-deep)}
+  .pay-cell.own{background:var(--amber-bg)}
+  .pay-cell.own span{color:var(--amber)}
+  .pay-caption{text-align:center; color:var(--ink-faint); font-size:12px; margin-bottom:6px}
+
+  /* ---------- 啊哈卡片 ---------- */
+  .aha-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-top:6px}
+  .aha-card{
+    background:var(--panel2); border:1px solid var(--line-soft); border-radius:12px; padding:18px 18px 16px;
+    display:flex; flex-direction:column;
+  }
+  .aha-num{
+    font-family:ui-monospace,Menlo,monospace; font-size:12px; font-weight:700; color:var(--green);
+    width:30px; height:30px; border-radius:8px; background:var(--green-bg); border:1px solid var(--green-dim);
+    display:flex; align-items:center; justify-content:center; margin-bottom:10px;
+  }
+  .aha-card h4{font-size:14px; font-weight:800; color:#0b120f; margin-bottom:6px; line-height:1.5}
+  .aha-card p{font-size:12.8px; color:var(--ink-dim); line-height:1.75; margin:0}
+
+  /* ---------- 表格 ---------- */
+  table{width:100%; border-collapse:collapse; margin:14px 0 8px; font-size:13.5px}
+  th{
+    text-align:left; padding:10px 12px; background:var(--panel2); color:var(--green-deep);
+    font-weight:700; border-bottom:2px solid var(--green-dim); font-size:12.5px; letter-spacing:.5px;
+  }
+  td{padding:10px 12px; border-bottom:1px solid var(--line-soft); vertical-align:top; color:var(--ink)}
+  tr:last-child td{border-bottom:none}
+  td:first-child{color:#0b120f; font-weight:700}
+
+  /* ---------- 处方结构条 ---------- */
+  .rx-bar{display:flex; border-radius:10px; overflow:hidden; margin:14px 0 8px; border:1px solid var(--line)}
+  .rx-seg{padding:14px 12px; text-align:center; flex:1}
+  .rx-seg b{display:block; font-size:14px; color:#0b120f; margin-bottom:3px}
+  .rx-seg span{font-size:12px}
+  .rx-west{background:var(--green-bg); flex:1.4}
+  .rx-west span{color:var(--green-deep)}
+  .rx-tcm{background:var(--panel2)}
+  .rx-tcm span{color:var(--ink-dim)}
+
+  .back-top{
+    display:block; text-align:center; margin-top:40px; color:var(--ink-faint);
+    font-size:12.5px; text-decoration:none; letter-spacing:1px;
+  }
+  .back-top:hover{color:var(--green)}
+
+  footer{border-top:1px solid var(--line); margin-top:22px; padding-top:20px; color:var(--ink-faint); font-size:12px}
+  footer p{margin-bottom:6px}
+  mark{background:var(--amber-bg); color:var(--amber); padding:1px 6px; border-radius:4px; font-size:12.5px; font-weight:700}
+
+  @media (max-width:680px){
+    h1{font-size:24px}
+    .card{padding:20px 20px}
+    .aha-grid{grid-template-columns:1fr}
+    .pay-bar,.rx-bar{flex-direction:column}
+    .pay-cell,.rx-seg{border-bottom:1px solid var(--line-soft)}
+    .toc{padding:18px 18px}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="kicker">HKU PMBA6118 · Innovating Healthcare · Pre-class Assignment</div>
+    <h1>课前作业 · Pre-class Assignment</h1>
+  </div>
+</header>
+
+<div class="wrap">
+
+<!-- ============ 目录 ============ -->
+<nav class="toc" id="toc">
+  <div class="toc-head"><h3>目录</h3><span>CONTENTS</span></div>
+  <ol>
+    <li><a href="#p1zh"><span class="n">01</span>自我介绍 / Self-intro</a></li>
+    <li><a href="#case1"><span class="n">02</span>痘痘问诊流程 / Acne Consultation</a></li>
+    <li><a href="#case2"><span class="n">03</span>坐骨神经痛开药 / Sciatica Prescription</a></li>
+  </ol>
+</nav>
+
+<!-- ============ Part 1 中文 ============ -->
+<section class="sec" id="p1zh">
+  <div class="sec-head"><span class="sec-num">01</span><h2>自我介绍 / Self-intro</h2></div>
+  <div class="card">
+    <p>各位老师、各位同学，大家好，我是肖睿璇（Rosheen Xiao）。中英文全名都不易上口，大家更轻松地叫我 Roro 就好。</p>
+    <p>我来自贵州省，是土家族（中国少数民族之一）。2016 年入读港大 BBA 会计金融，毕业后从事投行、投资工作六年，2026 年回到港大就读 MBA。最后一段职业经历是 AI Go-to-market，向企业客户销售国产大语言模型（LLM）API——核心是把大模型接入企业每天实际运转的业务流程。</p>
+    <p>选修这门课，我的期待主要是两个方向。一是为个人：身心健康管理是一项需要长期投入的能力，我希望在成为患者之前就掌握它，而不是在确诊之后被动应对；二是为职业：医疗是 AI 落地最重要的场景之一，课程讲授的基本原理、支付结构与组织逻辑，能帮助我更准确地识别合适的医疗客户，以及适合 AI 转型的环节。</p>
+    <p>详细背景见个人主页：<a href="https://roroxiao.github.io/Self-intro/">roroxiao.github.io/Self-intro</a></p>
+  </div>
+</section>
+
+<!-- English version · 英文版 -->
+<div class="card en-block" id="p1en" style="margin-top:-8px">
+  <div class="src">English version · 英文版</div>
+    <p>Hello, I am Xiao Ruixuan (Rosheen Xiao). Since both my Chinese and English names are hard to pronounce, just call me Roro.</p>
+    <p>I come from Guizhou Province and belong to the Tujia ethnic group, one of China's ethnic minorities. I entered HKU's BBA program in Accounting and Finance in 2016, spent six years in investment banking and investment, and returned to HKU in 2026 for my MBA. My most recent role was AI go-to-market, selling domestically developed large language model (LLM) APIs to enterprise clients — in essence, embedding AI into the business workflows companies actually run every day.</p>
+    <p>My expectations for this course run in two directions. One is personal: physical and mental health management is a capability that demands long-term investment, and I hope to master it before ever becoming a patient, rather than reacting after a diagnosis. The other is professional: health care is among the most important scenes of AI adoption; the fundamentals, payment structures and organizational logic this course teaches will help me more accurately identify the right healthcare clients — and the right links in the care chain for AI transformation.</p>
+    <p>Full background: <a href="https://roroxiao.github.io/Self-intro/">roroxiao.github.io/Self-intro</a></p>
+</div>
+
+<!-- ============ 02 痘痘问诊流程 ============ -->
+<section class="sec" id="case1">
+  <div class="sec-head"><span class="sec-num">02</span><h2>痘痘问诊流程</h2></div>
+
+    <div class="card" id="timeline">
+      <h3>旅程时间轴 · Journey Timeline</h3>
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-step">就诊前 · Before the Visit</div>
+          <div class="tl-text">脸上、头皮、背部长痘，反反复复<br><span class="tl-en">Recurrent acne on face, scalp and back</span></div>
+          <div class="tl-pay">困扰存在，但未影响正常生活 · bothersome but not life-affecting</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-step">问诊 · Consultation <span class="pay-chip ins">挂号 · 医保覆盖</span></div>
+          <div class="tl-text">就诊于北京朝阳医院皮肤科，接诊医师为副主任医师<br><span class="tl-en">Dermatology dept., Chaoyang Hospital; attending: associate chief physician</span></div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-step">检查 · Lab Test <span class="pay-chip ins">检查费 · 医保</span></div>
+          <div class="tl-text">医生首先安排真菌检查，结果提示真菌感染<br><span class="tl-en">Fungal test ordered first; result: positive</span></div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-step">方案 · Treatment Plan <span class="pay-chip self">刷酸 · 全部自费</span></div>
+          <div class="tl-text">医生建议刷酸治疗，开具 3 次疗程<br><span class="tl-en">Chemical peel recommended, 3 sessions prescribed</span></div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-step">治疗 · Treatment <span class="pay-chip self">全部自费</span></div>
+          <div class="tl-text">三次刷酸全部完成，费用自理<br><span class="tl-en">All three sessions completed, self-paid</span></div>
+        </div>
+        <div class="tl-item milestone">
+          <div class="tl-dot"></div>
+          <div class="tl-step">结局 · Outcome</div>
+          <div class="tl-text">此后更换至压力较小的工作与学习节奏，痤疮基本不再发作。回顾来看，真正诱因大概率是压力、睡眠与饮食<br><span class="tl-en">After switching to a less stressful routine, the acne largely stopped; the real triggers were most likely stress, sleep and diet</span></div>
+          <div class="tl-pay">痤疮消退，但无法归因 · gone, but unattributable</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-step">我的困惑 · My Confusion</div>
+          <div class="tl-text">刷酸对痤疮是否有效，我至今无法判断<br><span class="tl-en">Whether the peel worked, I still cannot tell</span></div>
+          <div class="tl-pay">治疗过程中，至少带来心理安慰 · at least, psychological comfort</div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="card" id="aha">
+      <h3>三个「啊哈」时刻 · Three Aha Moments</h3>
+      <div class="src">本次旅程中真正改变我认知的三个判断</div>
+      <div class="aha-grid">
+        <div class="aha-card">
+          <div class="aha-num">1</div>
+          <h4>医生的第一步是查病因，不是上治疗<br><span class="aha-en">Test the cause first, not the treatment</span></h4>
+          <p>诊断环节是循证的：先做真菌检查，拿到阳性结果后再定方案。但治疗方案（刷酸）只处理「已经长出的痘」，无法回应「为什么长痘」——真正的诱因是压力、睡眠与饮食，而这些不在医疗系统的处方范围之内。</p>
+          <p class="aha-en">Diagnosis was evidence-based; the treatment addressed only the visible acne, not why it grew — stress, sleep and diet lie beyond what medicine can prescribe.</p>
+        </div>
+        <div class="aha-card">
+          <div class="aha-num">2</div>
+          <h4>支付结构在诊室里悄悄分流<br><span class="aha-en">Payment structure splits quietly inside the clinic</span></h4>
+          <p>同一次就诊中，挂号与检查由医保覆盖，刷酸全部自费。一条医保目录线把一次就医切成两半：一半行为由医保规则塑造，另一半由患者的自费意愿决定。</p>
+          <p class="aha-en">One insurance line split the visit in half: consultation and tests covered, peels out of pocket — half shaped by insurance rules, half by my own willingness to pay.</p>
+        </div>
+        <div class="aha-card">
+          <div class="aha-num">3</div>
+          <h4>疗效黑箱，最后由「心理安慰」补位<br><span class="aha-en">The efficacy black box, filled by psychological comfort</span></h4>
+          <p>没有对照组、没有随访指标、没有结果记录，患者无法回答「值不值」。我至今无法区分是刷酸起了作用，还是工作节奏改变起了作用，抑或本会自愈。</p>
+          <p class="aha-en">No control group, no follow-up metrics, no outcome records — the patient cannot answer "was it worth it": the peel, the lifestyle change, or natural recovery?</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>English Version · 英文版</h3>
+      <div class="src en-block">Dermatology visit, Beijing Chaoyang Hospital (associate chief physician)</div>
+      <div class="en-block">
+        <p>I visited the dermatology department of Chaoyang Hospital, Beijing, for recurrent acne on my face, scalp and back. The doctor, an associate chief physician, ordered a fungal test before proposing any treatment; the result came back positive. The recommended treatment was a chemical peel (刷酸), three sessions, prescribed as a package.</p>
+        <p>The payment split is worth noting: the consultation and the lab test were covered by public insurance, whereas the peels were not — all out of pocket. I completed all three sessions.</p>
+        <p>The twist came later: after I moved to a less stressful job and study rhythm, the acne largely stopped. Was it the peel, or the lifestyle change? I honestly cannot tell. During the treatments, it at least felt like <i>something was being done</i> — psychological comfort substituting for unmeasured outcomes.</p>
+        <p>Three observations follow. 1) Diagnosis was evidence-based, yet the intervention treated symptoms rather than causes — the real cause, namely stress, sleep and diet, lies outside what medicine can prescribe. 2) One insurance line split a single visit into covered and uncovered halves. 3) With no outcome measurement at all, the patient substitutes perceived experience for efficacy — precisely the gap that Porter's value-based agenda targets.</p>
+        <p>My own words at the time: "To be honest, I still do not know whether the peel actually worked against the acne, but after each session I felt a little more at ease." (translated)</p>
+      </div>
+    </div>
+</section>
+
+<!-- ============ 03 坐骨神经痛开药 ============ -->
+<section class="sec" id="case2">
+  <div class="sec-head"><span class="sec-num">03</span><h2>坐骨神经痛开药</h2></div>
+    <p class="sec-desc">Sciatica &amp; the Prescription Mix · 2022, Shanghai lockdown · chief complaint: sciatic pain from all-day desk work with zero exercise</p>
+
+    <div class="card">
+      <h3>经过 · What Happened</h3>
+      <p>2022 年上海封城期间，居家办公、久坐且缺乏运动，出现坐骨神经痛。就诊后医生开具西药，服药后症状明显缓解；同一处方中另含一组中成药。我的直观判断是：真正起效的是西药，中成药更接近「搭着开」。</p>
+      <p class="en-block">During the 2022 Shanghai lockdown, I developed sciatica from all-day desk work without any exercise. The doctor prescribed Western medicines, which clearly worked, plus a stack of Chinese patent medicines. My layman's read is that the Western drugs did the work, while the TCM part functioned as an add-on.</p>
+      <div class="rx-bar">
+        <div class="rx-seg rx-west"><b>西药处方</b><span>真正起效（我的体感）</span></div>
+        <div class="rx-seg rx-tcm"><b>+ 中成药一组</b><span>「搭着开」</span></div>
+      </div>
+      <div class="pay-caption">同一次处方里的两种角色 · 下表为指南查证</div>
+    </div>
+
+    <div class="card" id="rx">
+      <h3>用药查证 · What the Guidelines Say</h3>
+      <div class="src">检索于 2026-11 · 来源：腾讯医典「坐骨神经痛」词条；中日友好医院骨科副主任医师公开解答（民福康）</div>
+      <table>
+        <tr><th>类别 · Category</th><th>常用药 · Common Drugs</th><th>作用 · Function</th></tr>
+        <tr><td>非甾体抗炎药 NSAIDs（一线 · first-line）</td><td>布洛芬、塞来昔布、双氯芬酸钠<br><span class="tl-en">ibuprofen, celecoxib, diclofenac sodium</span></td><td>止痛、减轻神经根水肿<br><span class="tl-en">pain relief; reduces nerve-root edema</span></td></tr>
+        <tr><td>神经营养药 · neurotrophic</td><td>甲钴胺（活性维生素 B12）<br><span class="tl-en">mecobalamin (active vitamin B12)</span></td><td>促进神经修复，缓解麻木<br><span class="tl-en">promotes nerve repair; relieves numbness</span></td></tr>
+        <tr><td>肌肉松弛剂 · muscle relaxant</td><td>乙哌立松<br><span class="tl-en">eperisone</span></td><td>缓解肌肉紧张<br><span class="tl-en">relieves muscle tension</span></td></tr>
+        <tr><td>中成药 · Chinese patent medicine</td><td>腰痛宁胶囊、腰痹通胶囊等<br><span class="tl-en">Yaotongning, Yaobitong capsules, etc.</span></td><td>词条原文：「由医生辩证用药」<br><span class="tl-en">"used at the physician's discretion"</span></td></tr>
+      </table>
+      <p><b class="g">查证结论：</b>「NSAIDs ± 甲钴胺」是国内门诊最常见的处方组合，与我的体感一致（西药起效）；中成药亦属词条列出的常规搭配，并非个别现象。<mark>推断</mark></p>
+      <p><b class="g">课堂讨论点（单例观察，不下结论）：</b>若「西药起效 + 中成药搭开」是普遍的处方习惯，可能的解释有两支：一是按项目付费下的服务量激励（Herzlinger 六力中的 Players 与 Funding），二是临床传统与患者预期的叠加。单例不足以支持结论，但这正是我希望带入课堂讨论的问题。</p>
+    </div>
+
+    <div class="card en-block">
+      <h3>English Version · 英文版</h3>
+      <div class="src">Sciatica &amp; the Prescription Mix · sources retrieved November 2026</div>
+      <p>During the 2022 Shanghai lockdown, I developed sciatica from all-day desk work without any exercise. The doctor prescribed Western medicines, which clearly worked, plus a stack of Chinese patent medicines. My layman's read is that the Western drugs did the work, while the TCM part functioned as an add-on.</p>
+      <p>What do the clinical references say? According to the sources retrieved in November 2026 — the Tencent Medical Dictionary entry on sciatica, and public answers by an orthopedic associate chief physician at China-Japan Friendship Hospital — first-line therapy consists of 1) NSAIDs (ibuprofen, celecoxib, diclofenac sodium) to relieve pain and reduce nerve-root edema; 2) neurotrophic agents (mecobalamin, active vitamin B12) to promote nerve repair; and 3) muscle relaxants (eperisone) as adjuncts, while Chinese patent medicines (e.g., Yaotongning and Yaobitong capsules) are listed as conventional co-prescriptions, "used at the physician's discretion based on syndrome differentiation."</p>
+      <p>To conclude, the "NSAIDs ± mecobalamin" combination is the most common outpatient pairing in China, which matches my personal experience that the Western drugs worked; the TCM co-prescription is likewise part of the listed routine, not an isolated incident (my inference). If "effective Western drugs plus add-on TCM" is a widespread prescribing habit, two explanations are possible: 1) volume-based incentives under fee-for-service payment (Herzlinger's six forces — Players × Funding); or 2) clinical tradition compounded by patient expectations. One data point cannot settle the question, and that is precisely the discussion I want to bring to class.</p>
+    </div>
+</section>
+
+<footer>
+  <p>※ 本报告事实部分均为作者亲历；用药查证部分来源已标注；「推断」为作者个人观点。</p>
+  <p>※ PMBA6118 Innovating Healthcare (SZ) 2026/27 · The University of Hong Kong</p>
+</footer>
+
+</div>
+</body>
+</html>
